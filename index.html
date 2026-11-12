@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Farkle Stats ChatDeck · démo</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Patrick+Hand&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="demo-tag">Démo</span><a class="back" href="https://chatdeck.fr/farkle">‹ Farkle</a>
+      <header>
+        <div class="eyebrow">Farkle Ranked</div>
+        <h1>Mes stats</h1>
+        <div class="sub" id="src">Chargement…</div>
+      </header>
+
+      <section class="card hero" id="hero"></section>
+
+      <nav class="tabs" role="tablist" aria-label="Sections" id="tabs"></nav>
+
+      <main id="view" class="panel"></main>
+
+      <footer class="foot">
+        <a href="#reglages" id="setLink">⚙️ Réglages de visibilité et options</a
+        ><span class="sub">En production : dans « Mon compte » sur ChatDeck.</span>
+      </footer>
+
+      <section class="card" id="loader" hidden>
+        <h2>Charger des fichiers</h2>
+        <div class="drop">
+          <label for="files">Choisis un ou plusieurs fichiers <b>.jsonl</b> de capture</label
+          ><br /><br /><input type="file" id="files" multiple accept=".jsonl,.json" />
+        </div>
+        <p class="note">
+          Servie par le collecteur (http://127.0.0.1:47321), cette page lit les fichiers et se met à jour
+          seule.
+        </p>
+      </section>
+    </div>
+    <div class="livelock" id="lock" hidden>
+      <div class="box">
+        <div class="die" aria-hidden="true">🎲</div>
+        <h2>Partie en cours</h2>
+        <p class="sub">Les stats se mettent à jour à la fin de la partie. Bonne chance !</p>
+      </div>
+    </div>
+
+    <script src="js/config/options.js"></script>
+    <script src="js/model/rules.js"></script>
+    <script src="js/model/wp-data.js"></script>
+    <script src="js/model/win-probability.js"></script>
+    <script src="js/model/decisions.js"></script>
+    <script src="js/decode/ardoise.js"></script>
+    <script src="js/decode/api.js"></script>
+    <script src="js/core/utils.js"></script>
+    <script src="js/core/state.js"></script>
+    <script src="js/calc/luck.js"></script>
+    <script src="js/calc/site-history.js"></script>
+    <script src="js/ui/header.js"></script>
+    <script src="js/ui/charts.js"></script>
+    <script src="js/views/saison.js"></script>
+    <script src="js/views/adversaires.js"></script>
+    <script src="js/views/moments.js"></script>
+    <script src="js/views/historique.js"></script>
+    <script src="js/views/ardoises.js"></script>
+    <script src="js/views/replay.js"></script>
+    <script src="js/views/records.js"></script>
+    <script src="js/views/mon-jeu.js"></script>
+    <script src="js/views/seuils.js"></script>
+    <script src="js/views/chance.js"></script>
+    <script src="js/views/cartes.js"></script>
+    <script src="js/views/succes.js"></script>
+    <script src="js/views/reglages.js"></script>
+    <script src="js/views/partage.js"></script>
+    <script src="js/ui/components.js"></script>
+    <script src="js/views/jeu.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
