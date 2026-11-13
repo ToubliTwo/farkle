@@ -219,7 +219,7 @@ function verdict(x, g) {
     e = decWP(x.d),
     bank = x.d.act === "bank";
   var cls = me ? "" : " opp",
-    lui = me ? "" : " pour lui";
+    pour = me ? "" : " pour " + nm;
   if (win)
     return x.cost === 0
       ? '<div class="verdict ok' +
@@ -228,9 +228,9 @@ function verdict(x, g) {
       : '<div class="verdict ko' +
           cls +
           '"><b>✗ ' +
-          (me ? "Trop gourmand" : nm + " trop gourmand") +
+          (me ? "Trop gourmand" : "Coup trop gourmand de " + nm) +
           "</b><span>" +
-          (me ? "Tu pouvais" : "Il pouvait") +
+          (me ? "Tu pouvais" : nm + " pouvait") +
           " encaisser et gagner la partie.</span></div>";
   var pB = e ? pct(e.bank, 1) : "",
     pR = e ? pct(e.roll, 1) : "";
@@ -240,32 +240,38 @@ function verdict(x, g) {
       ? ""
       : bank
         ? "En encaissant, " +
-          (me ? "tu gardes " : "il garde ") +
+          (me ? "tu gardes " : nm + " garde ") +
           pB +
           " de chances de gagner, contre " +
           pR +
           " en relançant."
         : "En relançant, " +
-          (me ? "tu as " : "il a ") +
+          (me ? "tu as " : nm + " a ") +
           pR +
           " de chances de gagner, contre " +
           pB +
           " en encaissant.";
     return '<div class="verdict ok' + cls + '"><b>✓ ' + t + "</b><span>" + why + "</span></div>";
   }
-  var t2 = bank ? (me ? "Trop prudent" : nm + " trop prudent") : me ? "Trop gourmand" : nm + " trop gourmand";
+  var t2 = bank
+    ? me
+      ? "Trop prudent"
+      : "Coup trop prudent de " + nm
+    : me
+      ? "Trop gourmand"
+      : "Coup trop gourmand de " + nm;
   var why2 = bank
     ? "Il valait mieux relancer : " +
       pR +
       " de chances de gagner" +
-      lui +
+      pour +
       ", contre " +
       pB +
       " en encaissant."
     : "Il valait mieux encaisser : " +
       pB +
       " de chances de gagner" +
-      lui +
+      pour +
       ", contre " +
       pR +
       " en relançant.";
@@ -407,17 +413,7 @@ function replayInner(g, st) {
         .join("") +
       "</div>"
     : "";
-  var em = (x.emotes || [])
-    .map(function (e) {
-      return (
-        '<span class="emote">' +
-        (e.by === "me"
-          ? "Ton emote #" + (e.i == null ? "?" : e.i)
-          : "Emote #" + (e.i == null ? "?" : e.i) + " de " + esc(g.opponent)) +
-        "</span>"
-      );
-    })
-    .join("");
+  var em = "";
   var badge =
     x.type === "farkle"
       ? '<span class="tag bad">Farkle !</span>'
@@ -446,6 +442,7 @@ function replayInner(g, st) {
     thrown +
     "</div>" +
     kept +
+    emoteBanner(x, g) +
     '<div class="cap' +
     late +
     '">' +
@@ -499,6 +496,11 @@ function replayInner(g, st) {
       mark +
       " " +
       esc(stepShort(y)) +
+      (y.emotes
+        ? ' <span class="mvem" title="Emote">💬' +
+          (y.emotes.length > 1 ? "×" + y.emotes.length : "") +
+          "</span>"
+        : "") +
       "</button>";
   });
   return '<div class="rpgrid"><div>' + h + '</div><div class="moves" id="moves">' + list + "</div></div>";
@@ -531,8 +533,48 @@ function stopPlay() {
     if (b) b.textContent = "▶ Lecture";
   }
 }
+// Une emote envoyée pendant ce coup : qui, laquelle, et à quel moment de la partie.
+function emoteText(e, g) {
+  var nm = esc(g.opponent),
+    who = e.by === "me" ? "Tu envoies" : nm + " envoie",
+    which = e.i == null ? "une emote" : "l'emote n° " + e.i,
+    a = e.after,
+    when = "";
+  if (a) {
+    var self = a.by === e.by,
+      whose = a.by === "me" ? "ton " : "le ",
+      of = a.by === "me" ? "" : " de " + nm;
+    if (a.kind === "farkle")
+      when = self ? " juste après son propre farkle" : " juste après " + whose + "farkle" + of;
+    else if (a.kind === "bank")
+      when = self
+        ? " juste après avoir encaissé"
+        : " juste après " + (a.by === "me" ? "ton encaissement" : "l'encaissement de " + nm);
+    else when = a.by === "me" ? " pendant ton tour" : self ? " pendant son tour" : " pendant le tour de " + nm;
+    if (self && a.by === "me") when = when.replace("son propre", "ton propre");
+  }
+  return who + " " + which + when + ".";
+}
+function emoteBanner(x, g) {
+  if (!x.emotes || !x.emotes.length) return "";
+  return x.emotes
+    .map(function (e) {
+      return (
+        '<div class="emoteb' +
+        (e.by === "me" ? " me" : "") +
+        '"><span class="ic">💬</span><span>' +
+        emoteText(e, g) +
+        "</span></div>"
+      );
+    })
+    .join("");
+}
 function stepDuration(x) {
   if (!x) return 1500;
+  if (x.emotes) return stepDurationBase(x) + 1600; // le temps de lire le bandeau
+  return stepDurationBase(x);
+}
+function stepDurationBase(x) {
   if (x.type === "throw") return 1300 + x.vals.length * 90;
   if (x.type === "farkle") return 2600;
   var nSel = x.selMask ? x.selMask.filter(Boolean).length : 1,

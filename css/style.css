@@ -1529,6 +1529,38 @@ a.prow:hover .name {
   background: var(--win);
   color: #06200f;
 }
+.emoteb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #2a2340;
+  border: 1px solid #6c5bd6;
+  color: #fff;
+  font-size: 13.5px;
+  line-height: 1.35;
+  animation: emotein 0.35s ease-out;
+}
+.emoteb.me {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+}
+.emoteb .ic {
+  font-size: 20px;
+  flex: none;
+}
+@keyframes emotein {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.mvem {
+  font-size: 12px;
+  opacity: 0.9;
+}
 .emote {
   font-size: 12px;
   background: #0006;
