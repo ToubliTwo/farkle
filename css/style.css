@@ -52,6 +52,9 @@ a {
 }
 .demo-tag {
   float: right;
+  width: max-content;
+  justify-self: end;
+  align-self: start;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1853,4 +1856,33 @@ a.prow:hover .name {
   .sw::after {
     transition: none;
   }
+}
+
+/* Bandeau : points de classement en jeu (top 10, quota du jour) */
+.rankalert {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #3a1d22;
+  border: 1px solid var(--loss);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.rankalert .ic {
+  font-size: 20px;
+  flex: none;
+}
+.rankalert b {
+  display: block;
+  color: #ff8a9a;
+}
+.rankalert span {
+  color: var(--ink);
+}
+.rankalert sup {
+  font-size: 0.7em;
 }

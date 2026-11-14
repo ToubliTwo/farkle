@@ -23,6 +23,7 @@ var ALIAS = {
 };
 function render() {
   $("lock").hidden = !(on("verrouPendantPartie") && S.live);
+  $("rankAlert").innerHTML = rankAlertHTML();
   renderHero();
   var vis = TABS.filter(function (t) {
     return !t[2] || on(t[2]);
@@ -321,7 +322,20 @@ function scrollToTabs() {
 }
 
 // Garde-fou : un bloqueur de publicité ou un envoi incomplet peut empêcher un fichier de se charger.
-var REQUIRED = ["renderSaison", "renderJeu", "renderAna", "renderChance", "renderCartes", "renderPartiesAll", "renderReplay", "renderAdv", "renderTrophees", "renderProfil", "WP", "decodeRaw"];
+var REQUIRED = [
+  "renderSaison",
+  "renderJeu",
+  "renderAna",
+  "renderChance",
+  "renderCartes",
+  "renderPartiesAll",
+  "renderReplay",
+  "renderAdv",
+  "renderTrophees",
+  "renderProfil",
+  "WP",
+  "decodeRaw"
+];
 var missing = REQUIRED.filter(function (n) {
   return typeof window[n] === "undefined";
 });
@@ -330,11 +344,16 @@ if (missing.length) {
   warn.className = "note";
   warn.style.cssText = "border:1px solid var(--loss);border-radius:12px;padding:10px 14px";
   warn.textContent =
-    "Fichier JS manquant (" + missing.join(", ") + ") : vérifier l'envoi sur le serveur, ou désactiver le bloqueur de publicité pour ce site.";
+    "Fichier JS manquant (" +
+    missing.join(", ") +
+    ") : vérifier l'envoi sur le serveur, ou désactiver le bloqueur de publicité pour ce site.";
   document.getElementById("tabs").before(warn);
 }
 
 route();
+setInterval(function () {
+  if (!document.hidden) $("rankAlert").innerHTML = rankAlertHTML(); // compte à rebours jusqu'à minuit
+}, 60000);
 if (served) {
   load()
     .then(scrollToTabs)

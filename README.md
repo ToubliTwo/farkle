@@ -104,6 +104,7 @@ js/
   calc/luck.js             indice de chance
   calc/site-history.js     historique Ranked recalculé depuis « Mes stats »
   ui/header.js, charts.js, components.js   en-tête, graphiques SVG, composants
+  ui/rank-alert.js         bandeau « points de classement en jeu » (top 10, quota du jour)
   views/*.js               un fichier par écran (saison, mon-jeu, replay, succes…)
   app.js                   rendu, événements, chargement des données (en dernier)
 tools/
@@ -135,6 +136,7 @@ Tout se règle dans des objets en haut de fichier, sans toucher au reste.
 
 | Clé | Effet |
 |---|---|
+| `alerteClassement` | Bandeau sur tous les onglets quand le joueur est dans le top 10 sans ses parties classées du jour (voir 5.2 bis). |
 | `verrouPendantPartie` | Stats masquées pendant une partie en cours (anti-tilt), mises à jour à la fin. |
 | `ardoises` | Historique des parties, relecture et ardoises. |
 | `records` | Records : meilleur tour, plus grosse perte, chaînes de Hot dice, remontées. |
@@ -163,6 +165,15 @@ Une partie est **excessive** pour un joueur si l'un des seuils de son contexte e
 | `maxReply` | — | 0,25 | entre amis, ne compte que si l'autre en renvoie moins d'une sur 4 |
 
 Le mute de l'adversaire est pris en compte : ses emotes restent comptées (elles sont dans l'état de partie), mais « sans réponse » est ignoré quand le joueur l'avait coupé. En production, le serveur connaît le mute de chacun : **le nombre de mutes reçus** (par des adversaires différents) est probablement le meilleur signal de spam. Le classement n'est qu'un signal : la décision reste humaine.
+
+### 5.2 bis Alerte de classement : `RANK_GUARD` (même fichier)
+Règle du site : dans le **top 10**, moins de **5 parties classées dans la journée** coûtent **30 points** de classement. Le bandeau rouge, placé sous les onglets (donc visible partout, relecture comprise), indique le rang, le nombre de parties encore à jouer et le temps restant avant minuit. Il disparaît dès que le quota est atteint ou que le joueur sort du top 10.
+
+```js
+var RANK_GUARD = { top: 10, quota: 5, penalty: 30 };
+```
+
+Le quota envoyé par la page « Mes stats » du site (champ `quota`) remplace celui de la config quand il est connu. En natif, le rang et le compte de parties du jour viennent directement du serveur ; dans la démo, le rang est celui de la dernière capture de « Mes stats » et le compteur affiche donc 0 sur 5 (aucune partie le jour de la consultation).
 
 ### 5.3 Règles du jeu et modèle de victoire
 - `js/model/rules.js` : `TARGET` (4 000), probabilités de farkle, combinaisons.

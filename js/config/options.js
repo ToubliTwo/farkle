@@ -5,6 +5,11 @@
 // Chaque bloc de la page s'active séparément. « on » = valeur par défaut ; le joueur peut ensuite
 // les basculer dans Réglages (mémorisé dans son navigateur). Démo : tout est activé.
 var DEFAULT_OPTIONS = {
+  alerteClassement: {
+    on: true,
+    label: "Alerte de classement",
+    desc: "Bandeau sur tous les onglets quand tu es dans le top 10 sans tes parties classées du jour : 30 points en jeu."
+  },
   verrouPendantPartie: {
     on: true,
     label: "Verrou pendant une partie",
@@ -99,6 +104,10 @@ function saveOpt() {
 
 // Seuils de modération des emotes, par contexte. Réglables par le dev.
 // En partie amie, on ne signale que le spam à sens unique : les échanges entre potes sont attendus.
+// Règle du top 10 : moins de « quota » parties classées dans la journée coûtent « penalty » points.
+// Le quota envoyé par la page « Mes stats » du site, s'il est connu, remplace celui-ci.
+var RANK_GUARD = { top: 10, quota: 5, penalty: 30 };
+
 // Une partie est « excessive » pour un joueur si l'un des seuils de son contexte est atteint.
 var EMO_RULES = {
   ranked: {
